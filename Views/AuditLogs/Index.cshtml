@@ -1,0 +1,77 @@
+@model IEnumerable<LogisticsPlatform.API.Models.AuditLog>
+@{
+    ViewData["Title"] = "System Audit Logs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+        <div>
+            <h2 style="margin:0; color:#60a5fa;">🛡️ Activity & Audit Logs</h2>
+            <p style="color:#94a3b8; margin:0.3rem 0 0 0; font-size:0.9rem;">
+                Real-time security logs, system actions, and user activity tracking.
+            </p>
+        </div>
+        <span style="background:#1e3a8a; color:#93c5fd; padding:0.4rem 0.8rem; border-radius:6px; font-size:0.85rem; font-weight:600;">
+            Showing Last 100 Entries
+        </span>
+    </div>
+
+    <!-- Search / Filter Bar -->
+    <form method="get" asp-action="Index" style="display:flex; gap:1rem; margin-bottom:1.5rem; flex-wrap:wrap;">
+        <input type="text" name="searchUser" value="@ViewData["SearchUser"]" placeholder="Filter by User / Email..." 
+               style="padding:0.6rem; border-radius:6px; background:#0f172a; color:white; border:1px solid #334155; flex:1; min-width:200px;" />
+        
+        <input type="text" name="searchAction" value="@ViewData["SearchAction"]" placeholder="Filter by Action / Controller..." 
+               style="padding:0.6rem; border-radius:6px; background:#0f172a; color:white; border:1px solid #334155; flex:1; min-width:200px;" />
+
+        <button type="submit" class="btn">Search Logs</button>
+        <a href="/AuditLogs" class="btn" style="background:#475569; text-decoration:none; display:inline-block; text-align:center;">Reset</a>
+    </form>
+
+    <!-- Audit Logs Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp (UTC)</th>
+                <th>User Identity</th>
+                <th>Action Performed</th>
+                <th>Target Module</th>
+                <th>IP Address</th>
+                <th>Execution Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (!Model.Any())
+            {
+                <tr>
+                    <td colspan="6" style="text-align:center; color:#94a3b8; padding:2rem;">
+                        No audit records found matching the filter criteria.
+                    </td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var log in Model)
+                {
+                    <tr>
+                        <td style="font-size:0.85rem; color:#94a3b8;">
+                            @log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")
+                        </td>
+                        <td style="font-weight:600; color:#34d399;">
+                            👤 @log.UserId
+                        </td>
+                        <td>
+                            <span style="background:#0f172a; border:1px solid #334155; padding:0.2rem 0.5rem; border-radius:4px; font-family:monospace; font-size:0.85rem;">
+                                @log.Action
+                            </span>
+                        </td>
+                        <td>@log.EntityName</td>
+                        <td style="font-family:monospace; font-size:0.85rem; color:#94a3b8;">@log.IpAddress</td>
+                        <td style="font-size:0.85rem; color:#cbd5e1;">@log.Details</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

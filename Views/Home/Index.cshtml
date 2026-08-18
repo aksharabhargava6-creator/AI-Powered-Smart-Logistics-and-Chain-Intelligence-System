@@ -1,0 +1,105 @@
+@model IEnumerable<SmartLogisticsApp.Models.Inventory>
+
+@{
+    ViewData["Title"] = "Operations Dashboard";
+    var forecasts = ViewBag.Forecasts as List<SmartLogisticsApp.Models.DemandForecast>;
+}
+
+<h1>Supply Chain Dashboard</h1>
+
+<div class="grid">
+    <div class="card">
+        <h3>Total Warehouses</h3>
+        <p style="font-size: 2rem; color: #60a5fa; margin: 0;">@ViewBag.TotalWarehouses</p>
+    </div>
+    <div class="card">
+        <h3>Total Orders</h3>
+        <p style="font-size: 2rem; color: #34d399; margin: 0;">@ViewBag.TotalOrders</p>
+    </div>
+    <div class="card">
+        <h3>Active Deliveries</h3>
+        <p style="font-size: 2rem; color: #f59e0b; margin: 0;">@ViewBag.ActiveDeliveries</p>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: 2fr 1fr;">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Current Warehouse Inventory</h2>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Warehouse</th>
+                    <th>On Hand</th>
+                    <th>Reserved</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@(item.Product?.ProductName ?? "N/A")</td>
+                            <td>@(item.Warehouse?.WarehouseName ?? "N/A")</td>
+                            <td>@item.QuantityOnHand</td>
+                            <td>@item.QuantityReserved</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #94a3b8;">No inventory records found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>AI Demand Predictions</h2>
+        <form asp-action="RunAiForecast" method="post">
+            <button type="submit" class="btn" style="width: 100%; margin-bottom: 1rem;">Run Forecast Model</button>
+        </form>
+        <ul>
+            @if (forecasts != null && forecasts.Any())
+            {
+                @foreach (var f in forecasts)
+                {
+                    <li style="margin-bottom: 0.8rem;">
+                        <strong>Product ID #@f.ProductId</strong><br />
+                        Predicted Demand: <span style="color: #34d399;">@f.PredictedDemand</span><br />
+                        <small style="color: #94a3b8;">Confidence: @(f.ConfidenceScore * 100)%</small>
+                    </li>
+                }
+            }
+            else
+            {
+                <p style="color: #94a3b8;">Click button above to execute AI demand engine.</p>
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="card" style="margin-top: 2rem;">
+    <h2>Live Fleet Telemetry (SignalR Simulation)</h2>
+    <div id="liveTelemetry" style="font-family: monospace; background-color: #0f172a; padding: 1rem; border-radius: 6px; height: 120px; overflow-y: auto;">
+        <p style="color: #94a3b8; margin: 0;">Waiting for real-time delivery GPS pings...</p>
+    </div>
+</div>
+
+<script>
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/trackingHub")
+        .build();
+
+    connection.on("ReceiveLocationUpdate", (deliveryId, lat, lng, speed, time) => {
+        const box = document.getElementById("liveTelemetry");
+        box.innerHTML = `<p style="color: #34d399; margin: 0;">[${time}] Delivery #${deliveryId} Ping -> Lat: ${lat}, Lng: ${lng} | Speed: ${speed} km/h</p>` + box.innerHTML;
+    });
+
+    connection.start().catch(err => console.error(err.toString()));
+</script>
