@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using LogisticsPlatform.API.Data;
 using LogisticsPlatform.API.Filters;
 using LogisticsPlatform.API.Services;
+using SmartLogisticsApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register Services & Filters
 builder.Services.AddScoped<IAiEngineService, AiEngineService>();
 builder.Services.AddScoped<AuditLogFilter>();
+
+// Member 7 - FR-10 Alerts & Notifications
+builder.Services.AddScoped<IMember7AlertService, Member7AlertService>();
 
 // Register Controllers & Apply AuditLogFilter Globally (FR-13)
 builder.Services.AddControllersWithViews(options =>

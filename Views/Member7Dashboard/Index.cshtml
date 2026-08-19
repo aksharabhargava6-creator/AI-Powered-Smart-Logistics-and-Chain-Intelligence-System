@@ -1,0 +1,395 @@
+@model SmartLogisticsApp.Models.AnalyticsDashboard
+
+@{
+    ViewData["Title"] = "Operations Dashboard";
+}
+
+<div class="container-fluid py-4">
+
+    <!-- Dashboard Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold">Operations Dashboard</h1>
+            <p class="text-muted mb-0">
+                Logistics KPI analytics, warehouse performance and operational alerts
+            </p>
+        </div>
+
+        <span class="badge bg-dark p-2">
+            Real-Time Operations
+        </span>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Products</h6>
+                    <h2 class="fw-bold">@Model.Summary.TotalProducts</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Warehouses</h6>
+                    <h2 class="fw-bold">@Model.Summary.TotalWarehouses</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Inventory Units</h6>
+                    <h2 class="fw-bold">@Model.Summary.TotalInventoryUnits</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Low Stock Products</h6>
+
+                    @if (Model.Summary.LowStockProducts > 0)
+                    {
+                        <h2 class="fw-bold text-danger">
+                            @Model.Summary.LowStockProducts
+                        </h2>
+                    }
+                    else
+                    {
+                        <h2 class="fw-bold text-success">0</h2>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DELIVERY KPI -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Orders</h6>
+                    <h3>@Model.Summary.TotalOrders</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Delivered Orders</h6>
+                    <h3 class="text-success">
+                        @Model.Summary.DeliveredOrders
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Active Deliveries</h6>
+                    <h3 class="text-primary">
+                        @Model.Summary.ActiveDeliveries
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Delayed Deliveries</h6>
+
+                    <h3 class="@(Model.Summary.DelayedDeliveries > 0
+                        ? "text-danger"
+                        : "text-success")">
+
+                        @Model.Summary.DelayedDeliveries
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- DELIVERY PERFORMANCE -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between">
+                <h5 class="fw-bold">Delivery Performance</h5>
+
+                <strong>
+                    @Model.Summary.DeliveryPerformancePercentage%
+                </strong>
+            </div>
+
+            <div class="progress mt-3" style="height: 22px;">
+                <div class="progress-bar"
+                     role="progressbar"
+                     style="width: @Model.Summary.DeliveryPerformancePercentage%">
+                    @Model.Summary.DeliveryPerformancePercentage%
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- WAREHOUSE ANALYTICS -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0 fw-bold">Warehouse Utilization</h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (Model.Warehouses.Any())
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Warehouse</th>
+                                <th>Capacity</th>
+                                <th>Stored Units</th>
+                                <th>Utilization</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                        @foreach (var warehouse in Model.Warehouses)
+                        {
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        @warehouse.WarehouseName
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @warehouse.CapacityUnits
+                                </td>
+
+                                <td>
+                                    @warehouse.StoredUnits
+                                </td>
+
+                                <td style="min-width:220px">
+
+                                    <div class="progress">
+
+                                        <div class="progress-bar
+                                            @(warehouse.UtilizationPercentage >= 100
+                                                ? "bg-danger"
+                                                : warehouse.UtilizationPercentage >= 90
+                                                    ? "bg-warning"
+                                                    : "bg-success")"
+                                             style="width: @Math.Min(warehouse.UtilizationPercentage, 100)%">
+
+                                            @warehouse.UtilizationPercentage%
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">
+                    No warehouse data available.
+                </p>
+            }
+
+        </div>
+    </div>
+
+    <!-- ORDER STATUS -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0 fw-bold">Order Status Analytics</h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (Model.OrderStatuses.Any())
+            {
+                <div class="row">
+
+                    @foreach (var status in Model.OrderStatuses)
+                    {
+                        <div class="col-md-3 mb-3">
+
+                            <div class="border rounded p-3">
+
+                                <h6 class="text-muted">
+                                    @status.Status
+                                </h6>
+
+                                <h3 class="fw-bold">
+                                    @status.Count
+                                </h3>
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">
+                    No order-status data available.
+                </p>
+            }
+
+        </div>
+    </div>
+
+    <!-- FORECAST ANALYTICS -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0 fw-bold">Demand Forecast</h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (Model.Forecasts.Any())
+            {
+                <div class="table-responsive">
+
+                    <table class="table table-striped">
+
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Forecast Date</th>
+                                <th>Predicted Demand</th>
+                                <th>Confidence</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                        @foreach (var forecast in Model.Forecasts)
+                        {
+                            <tr>
+
+                                <td>
+                                    @forecast.ProductName
+                                </td>
+
+                                <td>
+                                    @forecast.ForecastDate.ToString("dd MMM yyyy")
+                                </td>
+
+                                <td>
+                                    @forecast.PredictedDemand
+                                </td>
+
+                                <td>
+                                    @forecast.ConfidenceScore
+                                </td>
+
+                            </tr>
+                        }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            }
+            else
+            {
+                <p class="text-muted mb-0">
+                    No forecast data available.
+                </p>
+            }
+
+        </div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-header">
+            <h5 class="mb-0 fw-bold">
+                Operational Alerts
+            </h5>
+        </div>
+
+        <div class="card-body">
+
+            @if (Model.Alerts.Any())
+            {
+                @foreach (var alert in Model.Alerts)
+                {
+                    var alertClass = alert.Severity == "CRITICAL"
+                        ? "alert-danger"
+                        : "alert-warning";
+
+                    <div class="alert @alertClass">
+
+                        <div class="d-flex justify-content-between">
+
+                            <strong>
+                                @alert.Title
+                            </strong>
+
+                            <span class="badge
+                                @(alert.Severity == "CRITICAL"
+                                    ? "bg-danger"
+                                    : "bg-warning text-dark")">
+
+                                @alert.Severity
+
+                            </span>
+
+                        </div>
+
+                        <div class="mt-1">
+                            @alert.Message
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-success mb-0">
+                    No operational alerts. All monitored operations are within normal limits.
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
