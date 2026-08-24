@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SmartLogisticsApp.Models;
+using LogisticsPlatform.API.Models;
 
 namespace SmartLogisticsApp.Data;
 
@@ -14,6 +15,7 @@ public class SmartLogisticsContext : DbContext
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<DeliveryAssignment> DeliveryAssignments => Set<DeliveryAssignment>();
     public DbSet<DemandForecast> DemandForecasts => Set<DemandForecast>();
+public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
