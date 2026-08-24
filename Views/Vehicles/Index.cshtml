@@ -1,0 +1,44 @@
+@model IEnumerable<LogisticsPlatform.API.DTOs.VehicleDto>
+@{ ViewData["Title"] = "Fleet Vehicles"; }
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fa-solid fa-truck text-success me-2"></i>Fleet Vehicles</h2>
+    <a href="/Vehicles/Create" class="btn btn-success"><i class="fa-solid fa-plus me-1"></i> Register Vehicle</a>
+</div>
+
+<div class="card shadow">
+    <div class="card-body p-0">
+        <table class="table table-dark table-hover mb-0 align-middle">
+            <thead>
+                <tr class="table-active">
+                    <th>Vehicle ID</th>
+                    <th>Plate Number</th>
+                    <th>Model</th>
+                    <th>Capacity</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var v in Model)
+                    {
+                        <tr>
+                            <td>@v.Id</td>
+                            <td><code>@v.PlateNumber</code></td>
+                            <td>@v.Model</td>
+                            <td>@v.Capacity kg</td>
+                            <td><span class="badge bg-success">@v.Status</span></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No active fleet vehicles detected.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

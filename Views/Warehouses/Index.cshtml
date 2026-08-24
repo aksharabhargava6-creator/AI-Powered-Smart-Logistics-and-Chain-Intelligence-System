@@ -1,0 +1,35 @@
+@model IEnumerable<LogisticsPlatform.API.Models.Warehouse>
+@{ ViewData["Title"] = "Warehouses"; }
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fa-solid fa-warehouse text-warning me-2"></i>Warehouse Facilities</h2>
+    <button class="btn btn-warning text-dark fw-bold"><i class="fa-solid fa-plus me-1"></i> New Warehouse</button>
+</div>
+
+<div class="row g-4">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var warehouse in Model)
+        {
+            <div class="col-md-4">
+                <div class="card h-100 border-secondary">
+                    <div class="card-body">
+                        <h5 class="card-title text-info"><i class="fa-solid fa-building me-2"></i>@warehouse.Name</h5>
+                        <p class="card-text text-muted mb-2"><i class="fa-solid fa-location-dot me-1"></i> @warehouse.Location</p>
+                        <hr class="border-secondary" />
+                        <div class="d-flex justify-content-between">
+                            <span>Storage Capacity:</span>
+                            <strong>@warehouse.Capacity Units</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12 text-center py-5">
+            <p class="text-muted">No warehouse data registered. Add warehouses to enable stock transfer workflows.</p>
+        </div>
+    }
+</div>

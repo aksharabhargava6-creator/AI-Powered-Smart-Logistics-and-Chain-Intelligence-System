@@ -1,0 +1,43 @@
+@model IEnumerable<LogisticsPlatform.API.DTOs.DriverDto>
+@{ ViewData["Title"] = "Drivers"; }
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fa-solid fa-id-card text-primary me-2"></i>Drivers Management</h2>
+</div>
+
+<div class="card shadow">
+    <div class="card-body p-0">
+        <table class="table table-dark table-hover mb-0 align-middle">
+            <thead>
+                <tr class="table-active">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>License Number</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var d in Model)
+                    {
+                        <tr>
+                            <td>@d.Id</td>
+                            <td class="fw-bold">@d.Name</td>
+                            <td><code>@d.LicenseNumber</code></td>
+                            <td>@d.PhoneNumber</td>
+                            <td><span class="badge bg-info text-dark">@d.Status</span></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">No drivers registered in system context.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
