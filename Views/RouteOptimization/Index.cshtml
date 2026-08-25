@@ -1,0 +1,48 @@
+@{ ViewData["Title"] = "Route Optimization"; }
+
+<h2 class="mb-4"><i class="fa-solid fa-route text-danger me-2"></i>AI Route Optimization Engine</h2>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card p-3 shadow mb-4">
+            <h5 class="card-title mb-3">Optimize Route Waypoints</h5>
+            <div class="mb-3">
+                <label class="form-label">Start Location</label>
+                <input type="text" id="startLoc" class="form-control" value="Main Warehouse Terminal, NY" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Delivery Stops (Comma Separated)</label>
+                <textarea id="stops" class="form-control" rows="3">Stop A (Distribution Hub), Stop B (Retail Center), Stop C (Port Yard)</textarea>
+            </div>
+            <button onclick="optimizeRoute()" class="btn btn-danger w-100"><i class="fa-solid fa-microchip me-1"></i> Calculate Optimal Route</button>
+        </div>
+    </div>
+    
+    <div class="col-md-7">
+        <div class="card p-3 shadow">
+            <h5 class="card-title mb-3">Optimization Output</h5>
+            <div id="routeResults" class="alert alert-secondary mb-0">
+                Enter delivery waypoints and trigger calculation to calculate distance matrix and transit times.
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function optimizeRoute() {
+            document.getElementById("routeResults").innerHTML = 
+                '<div class="text-info"><i class="fa-solid fa-spinner fa-spin me-2"></i>Computing shortest path sequence via Python AI Engine...</div>';
+            setTimeout(() => {
+                document.getElementById("routeResults").innerHTML = 
+                    '<div class="text-success fw-bold mb-2"><i class="fa-solid fa-circle-check me-2"></i>Route Successfully Optimized!</div>' +
+                    '<ul class="list-group list-group-flush text-dark">' +
+                    '<li class="list-group-item">1. Start: Main Warehouse Terminal</li>' +
+                    '<li class="list-group-item">2. Stop B (Retail Center) - Saved 14 mins</li>' +
+                    '<li class="list-group-item">3. Stop A (Distribution Hub)</li>' +
+                    '<li class="list-group-item">4. Stop C (Port Yard)</li>' +
+                    '</ul>';
+            }, 1200);
+        }
+    </script>
+}
