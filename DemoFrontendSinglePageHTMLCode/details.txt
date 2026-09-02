@@ -1,1 +1,22 @@
 
+========================================================================
+Mock UI Dashboard (logistics-dashboard.html) - Purpose & Description
+========================================================================
+
+File: logistics-dashboard.html
+
+Description:
+This HTML file serves as an interactive, standalone frontend mockup 
+designed to showcase the visual design, user experience, and key functional 
+modules of the AI-Powered Smart Logistics & Supply Chain Intelligence Platform.
+
+Key Purpose:
+- Visual & Interactive Demo: Provides an offline, static representation 
+  of the platform's user interface, including live KPI metrics, 
+  warehouses, fleet tracking, route optimization, AI assistant, audit logs, 
+  and role-based permissions.
+- Backup Presentation Tool: Demonstrates component layouts and workflow 
+  integrations without requiring local backend services, SQL Server, or 
+  microservices to be running.
+- Design Reference: Serves as a UI target model for aligning backend 
+  API payloads (DTOs) and frontend views.
